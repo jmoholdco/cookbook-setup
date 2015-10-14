@@ -28,4 +28,4 @@ template '/etc/chef/client.d/foreman.rb' do
 end
 
 include_recipe 'chef-client::config'
-include_recipe 'chef-client::cron'
+include_recipe 'chef-client::service'

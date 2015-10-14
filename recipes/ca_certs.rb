@@ -7,12 +7,14 @@
 
 ca_trust = value_for_platform_family(
   'rhel' => '/etc/pki/ca-trust/source/anchors',
-  'debian' => '/usr/local/share/ca-certificates'
+  'debian' => '/usr/local/share/ca-certificates',
+  'default' => '/usr/local/share/ca-certificates'
 )
 
 update_trust_command = value_for_platform_family(
   'rhel' => 'update-ca-trust extract',
-  'debian' => 'update-ca-certificates'
+  'debian' => 'update-ca-certificates',
+  'default' => 'update-ca-certificates'
 )
 
 # Create the CA Trust Directory if it does not exist

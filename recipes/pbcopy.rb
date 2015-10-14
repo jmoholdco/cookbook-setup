@@ -6,7 +6,7 @@
 #
 netcat_package = value_for_platform_family(
   'rhel' => 'nmap-ncat',
-  'debian' => 'netcat'
+  'default' => 'netcat'
 )
 
 package netcat_package
