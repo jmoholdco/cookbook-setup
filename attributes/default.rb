@@ -1,3 +1,4 @@
+default['ovirt_guest'] = true
 default['setup'] = {
   'client' => {
     'foreman_host' => 'https://foreman.jmorgan.org:8443',
