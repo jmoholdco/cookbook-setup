@@ -23,15 +23,19 @@ default['chef_client']['load_gems'] = {
 default['chef_client']['config']['ssl_ca_path'] = node['setup']['ca_path']
 default['chef_client']['config']['ssl_ca_file'] = node['setup']['ca_file']
 
-case node['platform_family']
-when 'debian'
-  case node['platform']
-  when 'debian'
-    if node['platform_version'].to_i >= 8 && node.key?('init_package') && node['init_package'] == 'systemd'
-      default['chef_client']['init_style'] = 'systemd'
-    else
-      default['chef_client']['init_style'] = 'init'
-    end
-  when 'ubuntu'
-  end
-end
+init_style = value_for_platform(
+  'debian' => {
+    '< 8.0' => 'init',
+    '>= 8.0' => 'systemd'
+  },
+  'ubuntu' => {
+    '<= 14.10' => 'init',
+    '>= 15.04' => 'systemd'
+  },
+  %w(centos redhat) => {
+    '< 7.0' => 'init',
+    '>= 7.0' => 'systemd'
+  }
+)
+
+default['chef_client']['init_style'] = init_style
