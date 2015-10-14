@@ -17,7 +17,6 @@ RSpec.describe 'setup::default' do
   end
   context 'When all attributes are default, on an unspecified platform' do
     let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
-
     include_examples 'defaults'
 
     it 'does not include apt::default' do

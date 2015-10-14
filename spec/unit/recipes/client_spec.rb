@@ -10,7 +10,7 @@ RSpec.describe 'setup::client' do
   describe 'the init_sytle for platforms' do
     let(:chef_run) { ChefSpec::SoloRunner.new(opts).converge(described_recipe) }
     supported_platforms = {
-      'debian' => %w(7.8 8.8 8.1),
+      'debian' => %w(7.8 8.0 8.1),
       'ubuntu' => %w(14.04 14.10 15.04 15.10),
       'centos' => %w(6.7 7.0 7.0.1406 7.1.1503),
       'redhat' => %w(6.6 7.0 7.1)
@@ -29,7 +29,7 @@ RSpec.describe 'setup::client' do
             end
           elsif platform == 'debian' && version.to_i >= 8
             it 'sets the init style to systemd' do
-              expect(chef_run.node['chef_client']['init_sytle']).to eq 'systemd'
+              expect(chef_run.node['chef_client']['init_style']).to eq 'systemd'
             end
           elsif platform == 'centos' && version.to_i >= 7
             it 'sets the init sytle to systemd' do
@@ -50,7 +50,7 @@ RSpec.describe 'setup::client' do
   end
 
   context 'When all attributes are default, on an unspecified platform' do
-    let(:chef_run) { ChefSpec::ServerRunner.new.converge(described_recipe) }
+    let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
     let(:dir) { chef_run.directory('/etc/chef/client.d') }
     let(:foreman_conf) { chef_run.template('/etc/chef/client.d/foreman.rb') }
     let(:ssl_conf) { chef_run.template('/etc/chef/client.d/ssl.rb') }
@@ -88,32 +88,12 @@ RSpec.describe 'setup::client' do
       it 'subscribes to the directory resource' do
         expect(foreman_conf).to subscribe_to('directory[/etc/chef/client.d]')
       end
-
-      it 'notifies template[/etc/chef/client.d/ssl.rb]' do
-        expect(foreman_conf).to notify('template[/etc/chef/client.d/ssl.rb]')
-      end
-    end
-
-    describe 'template[/etc/chef/client.d/ssl.rb]' do
-      it 'creates the template' do
-        expect(chef_run).to create_template('/etc/chef/client.d/ssl.rb')
-          .with(source: 'ssl.rb.erb', mode: 0644)
-      end
-
-      it 'subscribes to the first template' do
-        expect(ssl_conf)
-          .to subscribe_to('template[/etc/chef/client.d/foreman.rb]')
-      end
-
-      it 'notifies the ruby_block to reload the config' do
-        expect(ssl_conf).to notify('ruby_block[reload_client_config]')
-      end
     end
 
     describe 'included recipes' do
       subject { chef_run }
       it { is_expected.to include_recipe 'chef-client::config' }
-      it { is_expected.to include_recipe 'chef-client::init_service' }
+      it { is_expected.to include_recipe 'chef-client::service' }
     end
   end
 end
