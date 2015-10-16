@@ -13,6 +13,12 @@ describe 'setup::default' do
     its(:content) { is_expected.to match(/foreman_reports/) }
   end
 
+  describe file('/etc/chef/client.d/env.rb') do
+    it { is_expected.to be_file }
+    it { is_expected.to be_owned_by 'root' }
+    its(:content) { is_expected.to match(/ENV\['SSL_CERT_FILE'\]/) }
+  end
+
   describe file('/usr/local/bin/pbcopy') do
     it { is_expected.to be_file }
     it { is_expected.to be_executable }
