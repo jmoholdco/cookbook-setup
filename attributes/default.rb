@@ -40,5 +40,3 @@ init_style = value_for_platform(
 )
 
 default['chef_client']['init_style'] = init_style
-default['chef_client']['daemon_options'] =
-  ["SSL_CERT_FILE=#{node['setup']['ca_file']}"]
