@@ -53,7 +53,7 @@ RSpec.describe 'setup::client' do
     let(:chef_run) { ChefSpec::SoloRunner.new.converge(described_recipe) }
     let(:dir) { chef_run.directory('/etc/chef/client.d') }
     let(:foreman_conf) { chef_run.template('/etc/chef/client.d/foreman.rb') }
-    let(:ssl_conf) { chef_run.template('/etc/chef/client.d/ssl.rb') }
+    let(:env_conf) { chef_run.template('/etc/chef/client.d/env.rb') }
     let(:client_reload) { chef_run.ruby_block('reload_client_config') }
 
     it 'converges successfully' do
@@ -82,11 +82,27 @@ RSpec.describe 'setup::client' do
     describe 'template[/etc/chef/client.d/foreman.rb]' do
       it 'creates the template' do
         expect(chef_run).to create_template('/etc/chef/client.d/foreman.rb')
-          .with(source: 'foreman.rb.erb', mode: 0644)
+          .with(source: 'foreman.rb.erb', mode: '0644')
       end
 
       it 'subscribes to the directory resource' do
         expect(foreman_conf).to subscribe_to('directory[/etc/chef/client.d]')
+      end
+    end
+
+    describe 'template[/etc/chef/client.d/env.rb]' do
+      it 'creates the template' do
+        expect(chef_run).to create_template('/etc/chef/client.d/env.rb')
+          .with(source: 'env.rb.erb', mode: '0644')
+      end
+
+      it 'subscribes to the other template' do
+        expect(env_conf).to subscribe_to(
+          'template[/etc/chef/client.d/foreman.rb]')
+      end
+
+      it 'notifes the ruby block to run' do
+        expect(env_conf).to notify('ruby_block[reload_client_config]').to(:run)
       end
     end
 

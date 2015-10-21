@@ -10,7 +10,7 @@ if platform_family? 'rhel'
   yum_package 'ovirt-guest-agent-common' do
     action :install
   end
-elsif node['platform'] == 'ubuntu' && node['platform_version'].to_i >= 14
+elsif platform_family?('debian') || (node['platform'] == 'ubuntu' && node['platform_version'].to_i >= 14) # rubocop:disable Metrics/LineLength
   apt_repository 'ovirt-guest-agent' do
     uri 'http://download.opensuse.org/repositories/home:/evilissimo:/ubuntu:/14.04/xUbuntu_14.04/' # rubocop:disable Metrics/LineLength
     components %w(/)
