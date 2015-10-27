@@ -9,10 +9,15 @@ netcat_package = value_for_platform_family(
   'default' => 'netcat'
 )
 
+pbcopy_src = value_for_platform_family(
+  'rhel' => 'pbcopy-rhel',
+  'default' => 'pbcopy'
+)
+
 package netcat_package
 
 cookbook_file '/usr/local/bin/pbcopy' do
-  source 'pbcopy'
+  source pbcopy_src
   owner 'root'
   group 'root'
   mode 0755

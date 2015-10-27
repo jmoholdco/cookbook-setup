@@ -102,7 +102,8 @@ RSpec.describe 'setup::client' do
       end
 
       it 'notifes the ruby block to run' do
-        expect(env_conf).to notify('ruby_block[reload_client_config]').to(:run)
+        expect(env_conf).to notify('ruby_block[reload_client_config]')
+          .to(:create)
       end
     end
 

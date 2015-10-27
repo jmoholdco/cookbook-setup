@@ -3,7 +3,7 @@ maintainer 'J. Morgan Lieberthal'
 maintainer_email 'morgan@jmorgan.org'
 license 'MIT'
 description 'Initial setup for machines in JML Organization'
-version '0.5.7'
+version '0.5.8'
 
 depends 'chef-vault', '~> 1.3'
 depends 'apt', '~> 2.8'
