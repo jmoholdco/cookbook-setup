@@ -17,6 +17,11 @@ update_trust_command = value_for_platform_family(
   'default' => 'update-ca-certificates'
 )
 
+certificate_dir = value_for_platform_family(
+  'rhel' => '/etc/pki/tls/certs',
+  'default' => '/etc/ssl/certs'
+)
+
 # Create the CA Trust Directory if it does not exist
 
 directory "#{ca_trust}" do
@@ -58,4 +63,12 @@ bash 'update_ca_trust' do
   code update_trust_command
   action :nothing
   user 'root'
+end
+
+cookbook_file "#{certificate_dir}/jml-chain.pem" do
+  source 'chef-ca.bundle.crt'
+  owner 'root'
+  group node['root_group']
+  mode '0644'
+  action :create
 end
