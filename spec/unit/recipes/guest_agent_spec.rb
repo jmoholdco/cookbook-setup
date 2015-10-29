@@ -5,11 +5,6 @@
 # Copyright (c) 2015 The Authors, All Rights Reserved.
 
 require 'spec_helper'
-RSpec.shared_examples 'converges successfully' do
-  it 'works' do
-    expect { chef_run }.to_not raise_error
-  end
-end
 
 RSpec.describe 'setup::guest_agent' do
   let(:chef_run) { ChefSpec::SoloRunner.new(opts).converge(described_recipe) }
