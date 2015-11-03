@@ -55,5 +55,27 @@ RSpec.describe 'setup::default' do
     it 'includes yum-epel::default' do
       expect(chef_run).to include_recipe 'yum-epel::default'
     end
+
+    describe 'Muttrc.local' do
+      context 'when mutt is not installed' do
+        before :each do
+          stub_command('rpm -qa | grep mutt').and_return false
+        end
+
+        it 'does nothing' do
+          expect(chef_run).to_not create_cookbook_file('/etc/Muttrc.local')
+        end
+      end
+
+      context 'when mutt is installed' do
+        before :each do
+          stub_command('rpm -qa | grep mutt').and_return true
+        end
+
+        it 'creates the file' do
+          expect(chef_run).to create_cookbook_file('/etc/Muttrc.local')
+        end
+      end
+    end
   end
 end

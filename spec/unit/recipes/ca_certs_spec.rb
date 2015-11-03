@@ -29,20 +29,21 @@ RSpec.describe 'setup::ca_certs' do
       describe 'the root certificate' do
         it 'notifies the intermediate crt to create' do
           expect(root_crt).to notify(
-            "cookbook_file[#{dir}/auth-intermediate.crt]")
-            .to(:create_if_missing).immediately
+            "cookbook_file[#{dir}/auth-intermediate.crt]"
+          ).to(:create_if_missing).immediately
         end
       end
 
       describe 'cookbook_file[auth-intermediate.crt]' do
         it 'notifies the bundle to create if missing' do
           expect(inter_crt).to notify(
-            "cookbook_file[#{dir}/chef-ca.bundle.crt]")
-            .to(:create_if_missing).immediately
+            "cookbook_file[#{dir}/chef-ca.bundle.crt]"
+          ).to(:create_if_missing).immediately
         end
         it 'doesnt do anything by default' do
           expect(chef_run).to_not create_cookbook_file_if_missing(
-            "#{dir}/auth-intermediate.crt")
+            "#{dir}/auth-intermediate.crt"
+          )
         end
       end
 
@@ -53,12 +54,25 @@ RSpec.describe 'setup::ca_certs' do
         end
         it 'doesnt do anything by default' do
           expect(chef_run).to_not create_cookbook_file_if_missing(
-            "#{dir}/chef-ca.bundle.crt")
+            "#{dir}/chef-ca.bundle.crt"
+          )
         end
       end
 
       it 'doesnt run the update script by default' do
         expect(chef_run).to_not run_bash('update_ca_trust')
+      end
+
+      describe 'the chain certificate' do
+        if %w(redhat centos).include? platform
+          let(:certs_dir) { '/etc/pki/tls/certs' }
+        else
+          let(:certs_dir) { '/etc/ssl/certs' }
+        end
+
+        it 'creates the chain certificate' do
+          expect(chef_run).to create_cookbook_file("#{certs_dir}/jml-chain.pem")
+        end
       end
     end
   end
